@@ -17,6 +17,9 @@ var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var minifycss = require('gulp-minify-css');
 var rename = require('gulp-rename');
+// 图像处理
+var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 
 // 设置相关路径
 var paths = {
@@ -62,6 +65,19 @@ gulp.task('scripts', ['clean'], function() {
         .pipe(concat('all.min.js'))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('assets/js'));
+});
+
+
+
+// 处理图像
+gulp.task('image', function () {
+    return gulp.src(paths.img)
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest('assets/images'));
 });
 
 
