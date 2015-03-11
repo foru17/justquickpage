@@ -116,11 +116,9 @@ gulp.task('scripts', ['clean'], function() {
         gulp.src(paths.js)
         .pipe(plumber())
         .pipe(jshint())
-        .pipe(uglify())
+        .pipe(uglify({compress:{pure_funcs:['console.log']}}))
         .pipe(concat('all.min.js'))
         .pipe(gulp.dest('assets/js'))
-
-
 
 });
 
