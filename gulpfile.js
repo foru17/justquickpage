@@ -112,14 +112,6 @@ gulp.task('scripts', ['clean'], function() {
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('assets/js'));
 
-
-        gulp.src(paths.js)
-        .pipe(plumber())
-        .pipe(jshint())
-        .pipe(uglify())
-        .pipe(concat('all.min.js'))
-        .pipe(gulp.dest('assets/js'))
-
 });
 
 
