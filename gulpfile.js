@@ -16,7 +16,7 @@ var jshint = require('gulp-jshint');
 
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
-var pngquant = require('imagemin-pngquant');
+
 
 
 var autoprefixer = require('gulp-autoprefixer');
@@ -24,7 +24,8 @@ var minifycss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 // 图像处理
 
-// var imagemin = require('gulp-imagemin');
+// var imagemin = require('gulp-imagemin'); //十分大
+//var pngquant = require('imagemin-pngquant');
 // var spritesmith = require('gulp.spritesmith');
 // var imageResize = require('gulp-image-resize');
 
