@@ -144,8 +144,6 @@ gulp.task('sprite', function() {
 
 
 
-
-
 gulp.task('watch', function() {
     console.log(chalk.green('[监听] 启动gulp watch自动编译'))
     gulp.watch(paths.js, ['scripts']);
@@ -154,27 +152,32 @@ gulp.task('watch', function() {
 
 /**
  * 生成最终交付文件夹
- * 执行gulp build
+ * $ gulp build
  *
  */
 gulp.task('build', function() {
     del(['build'], function() {
-        console.log(chalk.red('[清理] 删除旧有build'))
+        console.log(chalk.red('[清理] 删除旧有build文件夹'))
     });
     gulp.src('*.html').pipe(gulp.dest('build'))
-    gulp.src('assets/**/*').pipe(gulp.dest('build/assets'))
+    gulp.src('assets/**/!(*dev*)*').pipe(gulp.dest('build/assets'))
 });
 
 
 /**
  * 压缩最终的文件
- * gulp zip
+ * 自动增加当前时间戳 + 项目名称
+ * $ gulp zip
  */
 
 gulp.task('zip', function() {
+    var now = new Date();
+    del(['zipped/*.zip'], function() {
+        console.log(chalk.red('[清理] 删除旧有压缩包'))
+    });
     console.log(chalk.red('[压缩] 打包最终文件'))
     gulp.src('build/**/*')
-        .pipe(zip(pkg.name + '.zip'))
+        .pipe(zip(dateFormat(now, 'yyyy-mmmm-dS-h-MMTT') + '-' + pkg.name + '.zip'))
         .pipe(gulp.dest('zipped/'))
 });
 
