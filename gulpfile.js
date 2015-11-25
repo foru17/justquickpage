@@ -47,11 +47,11 @@ var zip = require('gulp-zip');
 
 // 设置相关路径
 var paths = {
-    assets: './assets',
-    sass: './dev/css/sass/**/*',
-    css: './dev/css',
-    js: './dev/js/**/*', //js文件相关目录
-    img: './dev/img/**/*', //图片相关
+    assets: 'assets',
+    sass: 'dev/css/sass/**/*',
+    css: 'dev/css',
+    js: 'dev/js/**/*', //js文件相关目录
+    img: 'dev/img/**/*', //图片相关
 };
 
 gulp.task('clean', function(cb) {
@@ -129,20 +129,54 @@ gulp.task('image', function() {
         .pipe(gulp.dest('assets/images'));
 });
 
+/**
+ * 自动生成@2x图片精灵
+ * $ gulp sprite
+ * algorithm排列有top-down,left-right,diagonal,alt-diagonal,binary-tree五种方式，根据需求选择
+ * 参考:https://github.com/Ensighten/spritesmith#algorithms
+ * 此task生成的为@2x的高清图
+ */
 
-// 图片精灵处理
-gulp.task('sprite', function() {
-    var spriteData = gulp.src('dev/sprite/*.png').pipe(spritesmith({
+
+gulp.task('retinasprite', function(cb) {
+    del(['dev/img/*.png'], function() {
+        console.log(chalk.red('[清理] 删除旧有精灵'))
+    });
+    var spriteData = gulp.src('dev/sprites/*.png').pipe(spritesmith({
         imgName: 'sprite@2x.png',
         cssName: '_sprite.scss',
-        algorithm: 'alt-diagonal'
+        algorithm: 'binary-tree',
+        padding: 10 //建议留白10像素
     }));
     spriteData.img.pipe(gulp.dest('dev/img/')); // 输出合成图片
-    spriteData.css.pipe(gulp.dest('dev/css/sass/')); // 输出的CSS
-    // spriteData.pipe(gulp.dest('path/to/output/'));
+    spriteData.css.pipe(gulp.dest('dev/css/sass/')).on('end',cb)
+    console.log(chalk.green('[缩略] 生成高清图'))
 });
 
 
+/**
+ * 自动生成@1x图片精灵
+ * 在retinasprite执行后自动生成标清精灵
+ */
+
+gulp.task('standardsprite',['retinasprite'],function(cb){
+    console.log(chalk.green('[缩略] 生成标清图'))
+    gulp.src('dev/img/sprite@2x.png').pipe(imageResize({
+            width: '50%'
+    }))
+    .pipe(rename('sprite.png'))
+    .pipe(gulp.dest('dev/img/')).on('end',cb)
+
+})
+gulp.task('sprite2assets',['retinasprite','standardsprite'],function(){
+    console.log(chalk.green('[转移] 复制精灵图到资源目录'))
+    gulp.src('dev/img/*.png').pipe(gulp.dest('assets/images/'))
+})
+
+/**
+ * 文件变更监听
+ * $ gulp watch
+ */
 
 gulp.task('watch', function() {
     console.log(chalk.green('[监听] 启动gulp watch自动编译'))
@@ -184,6 +218,6 @@ gulp.task('zip', function() {
 
 
 
-
+gulp.task('sprite', ['retinasprite', 'standardsprite','sprite2assets']);
 gulp.task('default', ['watch', 'scripts']);
 gulp.task('watch:base', ['watch']);
