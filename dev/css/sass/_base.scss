@@ -38,3 +38,13 @@ ul, li {
 .hide {
     display: none;
 }
+
+
+// 设置精灵图
+.icon-tingbook {
+    @include use-sprite($icon-tingbook, $sprite-normal, $sprite-retina)
+}
+
+.icon-search{
+    @include use-sprite($icon-search, $sprite-normal, $sprite-retina)
+}
