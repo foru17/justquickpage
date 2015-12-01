@@ -39,6 +39,7 @@ var stylish = require("jshint-stylish");
 var pkg = require('./package.json'); //获得配置文件中相关信息
 var chalk = require('chalk'); //美化日志
 var dateFormat = require('dateformat'); //获得自然时间
+var csscomb = require('gulp-csscomb'); //CSS规范排序
 
 // 打包发布
 var zip = require('gulp-zip');
